@@ -51,7 +51,8 @@ class AuthWarehouseController extends Controller
         }
 
         $data = [
-            'access_token' => $token,
+            'user' => $checkAccount,
+            'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ];
