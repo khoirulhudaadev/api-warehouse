@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\Api\Unit;
+
+class UnitRepository implements UnitRepositoryInterface 
+{
+
+    public function getAll() 
+    {
+        return Unit::all();
+    }
+
+    public function getById($id)
+    {
+        return Unit::find($id);
+    }
+
+
+    public function create(array $data)
+    {
+        return Unit::create($data);
+    }
+
+    public function update($id, array $data)
+    {
+        $unit = Unit::find($id);
+        if (!$unit) {
+            return null; // Jika tidak ada user dengan ID tersebut
+        }
+        $unit->update($data);
+        return $unit;
+    }
+
+    public function delete($id)
+    {
+        $unit = Unit::find($id);
+        return $unit->delete();
+    }
+}
