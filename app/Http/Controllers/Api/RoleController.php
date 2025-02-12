@@ -35,7 +35,7 @@ class RoleController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Role berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Role tidak ditemukan!', $result);    
+        return $this->sendApiError( 'Role tidak ditemukan!', $result, 404);    
     }
         
 
@@ -51,19 +51,19 @@ class RoleController extends Controller
 
             if($validator->fails()) 
             {
-                return $this->sendApiError( 'Data tidak sesuai!', $request->role_name);
+                return $this->sendApiError( 'Data tidak sesuai!', $request->role_name, 422);
             }
             
             // $role = Type::create($validator->validate());
             $role = $this->roleRepository->create($validator->validate());
-            return $this->sendApiResponse( 'Role berhasil dibuat!', $role);
+            return $this->sendApiResponse( 'Role berhasil dibuat!', $role, 201);
 
         } catch (ValidationException $e) {
             // Jika ada error validasi
-            return $this->sendApiError('Validation error', $e->errors());
+            return $this->sendApiError('Validation error', $e->errors(), 422);
         } catch (Exception $e) {
             // Jika ada error lainnya (misalnya database atau lainnya)
-            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage());
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
         }
     }   
 
@@ -75,7 +75,7 @@ class RoleController extends Controller
         //
         $role = $this->roleRepository->getById($id);
         if(!$role) {
-            return $this->sendApiError('Role tidak ada!', $id);
+            return $this->sendApiError('Role tidak ada!', $id, 404);
         }
         return $this->sendApiResponse('Role ditemukan!', $role);
     }
@@ -85,7 +85,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**
@@ -95,8 +95,8 @@ class RoleController extends Controller
     {
         $role = $this->roleRepository->delete($id);
         if(!$role) {
-            return $this->sendApiError('Hapus role gagal!', $id);
+            return $this->sendApiError('Hapus role gagal!', $id, 403);
         }        
-        return $this->sendApiResponse('Hapus role berhasil!', $id);
+        return $this->sendApiResponse('Hapus role berhasil!', $id, 201);
     }
 }

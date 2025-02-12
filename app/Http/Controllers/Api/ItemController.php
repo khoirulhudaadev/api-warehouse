@@ -48,14 +48,14 @@ class ItemController extends Controller
                 return $this->sendApiResponse('Barang berhasil didapatkan!', $result);    
             }
             
-            return $this->sendApiError('Barang tidak ditemukan!', $result);  
+            return $this->sendApiError('Barang tidak ditemukan!', $result, 404);  
             
         } catch (ValidationException $e) {
             // Jika ada error validasi
-            return $this->sendApiError('Validation error', $e->errors());
+            return $this->sendApiError('Validation error', $e->errors(), 422);
         } catch (Exception $e) {
             // Jika ada error lainnya (misalnya database atau lainnya)
-            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage());
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
         }
     }
         
@@ -76,7 +76,7 @@ class ItemController extends Controller
 
             if($validator->fails()) 
             {
-                return $this->sendApiError($validator->errors(), $request);
+                return $this->sendApiError($validator->errors(), $request, 422);
             }
 
             $image = $request->file('image');
@@ -93,14 +93,14 @@ class ItemController extends Controller
 
             // $type = Type::create($validator->validate());
             $type = $this->itemRepository->create($validatedData);
-            return $this->sendApiResponse('Barang berhasil ditambahkan!', $type);
+            return $this->sendApiResponse('Barang berhasil ditambahkan!', $type, 201);
 
         } catch (ValidationException $e) {
             // Jika ada error validasi
-            return $this->sendApiError('Validation error', $e->errors());
+            return $this->sendApiError('Validation error', $e->errors(), 422);
         } catch (Exception $e) {
             // Jika ada error lainnya (misalnya database atau lainnya)
-            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage());
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
         }
     }
 
@@ -112,9 +112,9 @@ class ItemController extends Controller
         //
         $type = $this->itemRepository->getById($id);
         if(!$type) {
-            return $this->sendApiError('Barang tidak ada!', $id);
+            return $this->sendApiError('Barang tidak ada!', $id, 404);
         }
-        return $this->sendApiResponse('Barang ditemukan!', $type);
+        return $this->sendApiResponse('Barang ditemukan!', $type,200);
     }
 
     /**
@@ -132,12 +132,12 @@ class ItemController extends Controller
             ]);
             
             if ($validator->fails()) {
-                return $this->sendApiError($validator->errors(), $request);
+                return $this->sendApiError($validator->errors(), $request, 422);
             }
 
             $itemFind = $this->itemRepository->getById($id);
             if(!$itemFind) {
-                return $this->sendApiError('Barang tidak ditemukan!', $id);
+                return $this->sendApiError('Barang tidak ditemukan!', $id, 404);
             }
 
             $validatedData = $validator->validated();
@@ -163,16 +163,16 @@ class ItemController extends Controller
 
             $item = $this->itemRepository->update($id, $validatedData);
             if(!$item) {
-                return $this->sendApiError('Gagal perbarui data barang!', $id);
+                return $this->sendApiError('Gagal perbarui data barang!', $id, 400);
             }
 
-            return $this->sendApiResponse('Berhasil perbarui data barang!', $item);
+            return $this->sendApiResponse('Berhasil perbarui data barang!', $item, 201);
         } catch (ValidationException $e) {
             // Jika ada error validasi
-            return $this->sendApiError('Validation error', $e->errors());
+            return $this->sendApiError('Validation error', $e->errors(), 422);
         } catch (Exception $e) {
             // Jika ada error lainnya (misalnya database atau lainnya)
-            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage());
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
         }
     }
 
@@ -183,8 +183,8 @@ class ItemController extends Controller
     {
         $type = $this->itemRepository->delete($id);
         if(!$type) {
-            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $type);
+            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $type, 404);
         }        
-        return $this->sendApiResponse('Hapus data berhasil!', $id);
+        return $this->sendApiResponse('Hapus data berhasil!', $id, 201);
     }
 }

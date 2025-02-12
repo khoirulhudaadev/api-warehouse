@@ -32,7 +32,7 @@ class TypeController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse('semua jenis berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError('Jenis tidak ditemukan!', $result);    
+        return $this->sendApiError('Jenis tidak ditemukan!', $result, 404);    
     }
         
 
@@ -48,15 +48,15 @@ class TypeController extends Controller
 
         if($validator->fails()) 
         {
-            return $this->sendApiError('Data tidak sesuai!', $request->type_name);
+            return $this->sendApiError('Data tidak sesuai!', $request->type_name, 422);
         }
         
         // $type = Type::create($validator->validate());
         $type = $this->typeRepository->create($validator->validate());
         if($type) {
-            return $this->sendApiResponse( 'Jenis berhasil dibuat!', $type);
+            return $this->sendApiResponse( 'Jenis berhasil dibuat!', $type, 201);
         }
-        return $this->sendApiError( 'Jenis gagal dibuat!', $type);
+        return $this->sendApiError( 'Jenis gagal dibuat!', $type, 403);
         
     }
 
@@ -68,7 +68,7 @@ class TypeController extends Controller
         //
         $type = $this->typeRepository->getById($id);
         if(!$type) {
-            return $this->sendApiError('Jenis tidak ada!', $id);
+            return $this->sendApiError('Jenis tidak ada!', $id, 404);
         }
         return $this->sendApiResponse('Jenis ditemukan!', $type);
     }
@@ -78,7 +78,7 @@ class TypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**
@@ -88,8 +88,8 @@ class TypeController extends Controller
     {
         $type = $this->typeRepository->delete($id);
         if(!$type) {
-            return $this->sendApiError('Hapus jenis gagal!', $id);
+            return $this->sendApiError('Hapus jenis gagal!', $id, 403);
         }        
-        return $this->sendApiResponse('Hapus jenis berhasil!', $id);
+        return $this->sendApiResponse('Hapus jenis berhasil!', $id, 201);
     }
 }

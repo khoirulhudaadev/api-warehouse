@@ -98,19 +98,19 @@ class AuthWarehouseController extends Controller
             ]);
             if($validator->fails()) 
             {
-                return $this->sendApiError($validator->errors(), $request);
+                return $this->sendApiError($validator->errors(), $request, 422);
             }
 
             $checkEmailAndToken = \DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->where('token', $request->token);
             if(!$checkEmailAndToken) {
-                return $this->sendApiError('Token tidak valid atau sudah kadaluarsa!', $request->token);
+                return $this->sendApiError('Token tidak valid atau sudah kadaluarsa!', $request->token, 400);
             };
             
             $user = User::where('email', $request->email)->first();
             if(!$user) {
-                return $this->sendApiError('Email tidak terdaftar!', $request->email);
+                return $this->sendApiError('Email tidak terdaftar!', $request->email, 404);
             };
 
             $user->password = Hash::make($request->password);
@@ -124,10 +124,10 @@ class AuthWarehouseController extends Controller
             
         } catch (ValidationException $e) {
             // Jika ada error validasi
-            return $this->sendApiError('Validation error', $e->errors());
+            return $this->sendApiError('Validation error', $e->errors(), 422);
         } catch (Exception $e) {
             // Jika ada error lainnya (misalnya database atau lainnya)
-            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage());
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
         }
     }
   

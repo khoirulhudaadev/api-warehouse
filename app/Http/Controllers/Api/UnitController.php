@@ -33,7 +33,7 @@ class UnitController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Data berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Data tidak ditemukan!', $result);    
+        return $this->sendApiError( 'Data tidak ditemukan!', $result, 404);    
     }
         
 
@@ -49,16 +49,16 @@ class UnitController extends Controller
 
         if($validator->fails()) 
         {
-            return $this->sendApiError( $validator->errors(), $request->unit_name);
+            return $this->sendApiError( $validator->errors(), $request->unit_name, 422);
         }
         
         // $unit = Type::create($validator->validate());
         $unit = $this->unitRepository->create($validator->validate());
 
         if($unit) {
-            return $this->sendApiResponse( 'Satuan berhasil dibuat!', $unit);
+            return $this->sendApiResponse( 'Satuan berhasil dibuat!', $unit, 201);
         }
-        return $this->sendApiError( 'Satuan gagal dibuat!', $unit);
+        return $this->sendApiError( 'Satuan gagal dibuat!', $unit, 403);
         
     }
 
@@ -70,7 +70,7 @@ class UnitController extends Controller
         //
         $unit = $this->unitRepository->getById($id);
         if(!$unit) {
-            return $this->sendApiError('Satuan tidak ada!', $id);
+            return $this->sendApiError('Satuan tidak ada!', $id, 404);
         }
         return $this->sendApiResponse('Satuan ditemukan!', $unit);
     }
@@ -80,7 +80,7 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**
@@ -90,8 +90,8 @@ class UnitController extends Controller
     {
         $unit = $this->unitRepository->delete($id);
         if(!$unit) {
-            return $this->sendApiError('Hapus satuan gagal!', $id);
+            return $this->sendApiError('Hapus satuan gagal!', $id, 403);
         }        
-        return $this->sendApiResponse('Hapus satuan berhasil!', $id);
+        return $this->sendApiResponse('Hapus satuan berhasil!', $id, 201);
     }
 }
