@@ -7,6 +7,7 @@ use App\Repositories\UnitRepository;
 use App\Traits\ApiResponseTraitError;
 use App\Traits\ApiResponseTraitSuccess;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -33,7 +34,7 @@ class UnitController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Data berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Data tidak ditemukan!', $result, 404);    
+        return $this->sendApiError( 'Data tidak ditemukan!', $result, 422);    
     }
         
 
@@ -70,7 +71,7 @@ class UnitController extends Controller
         //
         $unit = $this->unitRepository->getById($id);
         if(!$unit) {
-            return $this->sendApiError('Satuan tidak ada!', $id, 404);
+            return $this->sendApiError('Satuan tidak ada!', $id, 422);
         }
         return $this->sendApiResponse('Satuan ditemukan!', $unit);
     }
@@ -92,6 +93,7 @@ class UnitController extends Controller
         if(!$unit) {
             return $this->sendApiError('Hapus satuan gagal!', $id, 403);
         }        
+        Cache::forget('unit_key');
         return $this->sendApiResponse('Hapus satuan berhasil!', $id, 201);
     }
 }

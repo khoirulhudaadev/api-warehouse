@@ -38,12 +38,12 @@ class AuthWarehouseController extends Controller
 
         $checkAccount = $this->userRepository->getByEmail($request->email);
         if(!$checkAccount) {
-            return $this->sendApiError('Email tidak terdaftar!', $request->email);
+            return $this->sendApiError('Email tidak terdaftar!', $request->email, 422);
         }
 
         $checkPassword = Hash::check($request->password, $checkAccount->password);
         if(!$checkPassword) {
-            return $this->sendApiError('Password tidak sesuai!', null);
+            return $this->sendApiError('Password tidak sesuai!', null, 422);
         }
 
         if (!$token = auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -51,10 +51,10 @@ class AuthWarehouseController extends Controller
         }
 
         $data = [
-            'user' => $checkAccount,
+            'user' => $checkAccount->load('role'),
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 360
         ];
   
         return $this->sendApiResponse('Berhasil masuk!', $data);
@@ -70,23 +70,39 @@ class AuthWarehouseController extends Controller
         // Cek apakah email tersebut sudah terdaftar di database
         $checkAccount = $this->userRepository->getByEmail($request->email);
         if(!$checkAccount) {
-            return $this->sendApiError('Email tidak terdaftar!', $request->email);
+            return $this->sendApiError('Email tidak terdaftar!', $request->email, 422);
         }
-
+      
         // Generate token unik untuk reset password
         $token = Str::random(60);
 
-        // Simpan token reset ke database (misalnya di tabel password_resets)
-        \DB::table('password_reset_tokens')->insert([
-            'email' => $request->email,
-            'token' => $token,
-            'created_at' => now(),
-        ]);
+        $findEmail = \DB::table('password_reset_tokens')
+        ->where('email',$request->email)
+        ->first();
 
-        // Kirim email berisi token reset password
-        Mail::to($request->email)->send(new PasswordResetMail($request->email, $token));
+        if($findEmail) {
+            \DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->update([
+                'token' => $token,
+                'created_at' => now(),
+            ]);
+        } else {
+            \DB::table('password_reset_tokens')
+            ->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => now(),
+            ]);
+        }
+    
+        try {
+            Mail::to($request->email)->send(new PasswordResetMail($request->email, $token));
+        } catch (\Exception $e) {
+            return $this->sendApiError('Terjadi kesalahan saat mengirim email. Coba lagi nanti.', null, 500);
+        }
 
-        return $this->sendApiResponse('Periksa pesan email anda!', $request->email);
+        return $this->sendApiResponse('Periksa pesan email anda!', $request->email, 201);
     }
 
     public function resetPassword(Request $request) {
@@ -110,7 +126,7 @@ class AuthWarehouseController extends Controller
             
             $user = User::where('email', $request->email)->first();
             if(!$user) {
-                return $this->sendApiError('Email tidak terdaftar!', $request->email, 404);
+                return $this->sendApiError('Email tidak terdaftar!', $request->email, 422);
             };
 
             $user->password = Hash::make($request->password);
@@ -120,7 +136,7 @@ class AuthWarehouseController extends Controller
             ->where('email', $request->email)
             ->delete();
 
-            return $this->sendApiResponse('Perbarui password telah berhasil!', $request->email);
+            return $this->sendApiResponse('Perbarui password telah berhasil!', $request->email, 201);
             
         } catch (ValidationException $e) {
             // Jika ada error validasi
@@ -139,7 +155,7 @@ class AuthWarehouseController extends Controller
     public function logout()
     {
         auth()->logout();
-  
+        
         return response()->json(['message' => 'Successfully logged out']);
     }
   

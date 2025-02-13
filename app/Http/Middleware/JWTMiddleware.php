@@ -35,11 +35,11 @@ class JWTMiddleware
         } catch (JWTException $e) {
             // Menangani kesalahan JWT: token tidak ditemukan atau kadaluarsa
             if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException) {
-                return $this->sendApiError('Token telah kadaluarsa!', null);
+                return $this->sendApiError('Token telah kadaluarsa!', null, 401);
             } elseif ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException) {
-                return $this->sendApiError('Token tidak valid!', null);
+                return $this->sendApiError('Token tidak valid!', null, 403);
             } elseif ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException) {
-                return $this->sendApiError('Token tidak ditemukan!', null);
+                return $this->sendApiError('Token tidak ditemukan!', null, 400);
             }
         }
         

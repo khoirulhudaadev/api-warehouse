@@ -7,6 +7,7 @@ use App\Traits\ApiResponseTraitError;
 use App\Traits\ApiResponseTraitSuccess;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -94,5 +95,11 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+        $result = $this->userRepository->delete($id);
+        if(!$result) {
+            return $this->sendApiError( 'Gagal menghapus akun!', $result);              
+        }
+        Cache::forget('user_key');
+        return $this->sendApiResponse( 'Berhasil hapus akun!', $result);              
     }
 }

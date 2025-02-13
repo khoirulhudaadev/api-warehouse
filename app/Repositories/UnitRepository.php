@@ -3,13 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\Api\Unit;
+use Illuminate\Support\Facades\Cache;
 
 class UnitRepository implements UnitRepositoryInterface 
 {
 
     public function getAll() 
     {
-        return Unit::all();
+        return Cache::remember('unit_key', 60, function () {
+            return Unit::all();
+        });
     }
 
     public function getById($id)

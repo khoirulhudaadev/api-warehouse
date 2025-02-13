@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\TypeController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\AuthWarehouseController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CustomThrottle;
 use App\Http\Middleware\JWTMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -15,18 +16,18 @@ use Illuminate\Support\Facades\Route;
  *
 */
 
-Route::middleware([JWTMiddleware::class, 'throttle:3,1'])
+Route::middleware([JWTMiddleware::class, CustomThrottle::class])
 ->prefix('v1')
 ->group(function() 
 {
     
     // Authentications
     Route::post('/login', [AuthWarehouseController::class, 'login'])
-    ->withoutMiddleware([JWTMiddleware::class]);
+    ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
     Route::post('/forgot-password', [AuthWarehouseController::class, 'forgotPassword'])
-    ->withoutMiddleware([JWTMiddleware::class]);
+    ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
     Route::post('/reset-password', [AuthWarehouseController::class, 'resetPassword'])
-    ->withoutMiddleware([JWTMiddleware::class]);
+    ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
     
     // Items
     Route::get('item', [ItemController::class, 'index']);

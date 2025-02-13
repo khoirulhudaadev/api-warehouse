@@ -3,14 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Api\Item;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 
 class ItemRepository implements ItemRepositoryInterface 
 {
     public function getAll() 
     {
-        return Item::all();
+        return Cache::remember('item_key', 60, function () {
+            return Item::with(['units', 'types'])
+            ->select(array_diff(\Schema::getColumnListing('items'), ['image_public_id'])) // Ambil semua kecuali 'te'
+            ->get();
+        });
     }
 
     public function getById($id)

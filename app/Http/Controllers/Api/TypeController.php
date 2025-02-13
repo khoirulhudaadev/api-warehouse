@@ -7,6 +7,7 @@ use App\Repositories\TypeRepository;
 use App\Traits\ApiResponseTraitError;
 use App\Traits\ApiResponseTraitSuccess;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class TypeController extends Controller
@@ -32,7 +33,7 @@ class TypeController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse('semua jenis berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError('Jenis tidak ditemukan!', $result, 404);    
+        return $this->sendApiError('Jenis tidak ditemukan!', $result, 422);    
     }
         
 
@@ -68,7 +69,7 @@ class TypeController extends Controller
         //
         $type = $this->typeRepository->getById($id);
         if(!$type) {
-            return $this->sendApiError('Jenis tidak ada!', $id, 404);
+            return $this->sendApiError('Jenis tidak ada!', $id, 422);
         }
         return $this->sendApiResponse('Jenis ditemukan!', $type);
     }
@@ -90,6 +91,7 @@ class TypeController extends Controller
         if(!$type) {
             return $this->sendApiError('Hapus jenis gagal!', $id, 403);
         }        
+        Cache::forget('type_key');
         return $this->sendApiResponse('Hapus jenis berhasil!', $id, 201);
     }
 }

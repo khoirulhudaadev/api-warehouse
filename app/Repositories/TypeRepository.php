@@ -3,12 +3,15 @@
 namespace App\Repositories;
 
 use App\Models\Api\Type;
+use Illuminate\Support\Facades\Cache;
 
 class TypeRepository implements TypeRepositoryInterface 
 {
     public function getAll() 
     {
-        return Type::all();
+        return Cache::remember('type_key', 60, function () {
+            return Type::all();
+        });
     }
 
     public function getById($id)

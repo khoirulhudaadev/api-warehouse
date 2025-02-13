@@ -25,11 +25,11 @@ class Item extends Model
 
     public function types(): BelongsTo 
     {
-        return $this->belongsTo(Type::class, 'type_id');
+        return $this->belongsTo(Type::class, 'type_id')->select('type_id', 'type_name');
     }
 
     public function units(): BelongsTo 
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        return $this->belongsTo(Unit::class, 'unit_id')->select('unit_id', 'unit_name');
     }
 }

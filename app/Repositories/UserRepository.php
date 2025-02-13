@@ -3,14 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Api\User;
+use Illuminate\Support\Facades\Cache;
 
 
 class UserRepository implements RoleRepositoryInterface 
 {
     public function getAll() 
     {
-        $result = User::with('roles')->get();
-        return $result;
+        return Cache::remember('user_key', 60, function () {
+            $result = User::with('role')->get();
+            return $result;
+        });
     }
 
     public function getById($id)

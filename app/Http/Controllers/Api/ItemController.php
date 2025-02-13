@@ -9,6 +9,7 @@ use App\Traits\ApiResponseTraitSuccess;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -48,7 +49,7 @@ class ItemController extends Controller
                 return $this->sendApiResponse('Barang berhasil didapatkan!', $result);    
             }
             
-            return $this->sendApiError('Barang tidak ditemukan!', $result, 404);  
+            return $this->sendApiError('Barang tidak ditemukan!', $result, 422);  
             
         } catch (ValidationException $e) {
             // Jika ada error validasi
@@ -112,7 +113,7 @@ class ItemController extends Controller
         //
         $type = $this->itemRepository->getById($id);
         if(!$type) {
-            return $this->sendApiError('Barang tidak ada!', $id, 404);
+            return $this->sendApiError('Barang tidak ada!', $id, 422);
         }
         return $this->sendApiResponse('Barang ditemukan!', $type,200);
     }
@@ -137,7 +138,7 @@ class ItemController extends Controller
 
             $itemFind = $this->itemRepository->getById($id);
             if(!$itemFind) {
-                return $this->sendApiError('Barang tidak ditemukan!', $id, 404);
+                return $this->sendApiError('Barang tidak ditemukan!', $id, 422);
             }
 
             $validatedData = $validator->validated();
@@ -183,8 +184,9 @@ class ItemController extends Controller
     {
         $type = $this->itemRepository->delete($id);
         if(!$type) {
-            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $type, 404);
-        }        
+            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $type, 422);
+        }       
+        Cache::forget('item_key'); 
         return $this->sendApiResponse('Hapus data berhasil!', $id, 201);
     }
 }
