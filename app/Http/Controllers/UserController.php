@@ -62,7 +62,10 @@ class UserController extends Controller
             // Simpan ke repository
             $user = $this->userRepository->create($data);
     
-            return $this->sendApiResponse('Akun berhasil dibuat!', $user);
+            if($user) {
+                Cache::forget('use_key');
+                return $this->sendApiResponse('Akun berhasil dibuat!', $user);
+            }
     
         } catch (ValidationException $e) {
             // Jika ada error validasi

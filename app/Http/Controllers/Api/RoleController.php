@@ -8,6 +8,7 @@ use App\Traits\ApiResponseTraitError;
 use App\Traits\ApiResponseTraitSuccess;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -56,7 +57,12 @@ class RoleController extends Controller
             
             // $role = Type::create($validator->validate());
             $role = $this->roleRepository->create($validator->validate());
-            return $this->sendApiResponse( 'Role berhasil dibuat!', $role, 201);
+
+            if($role) 
+            {
+                Cache::forget('type_key');
+                return $this->sendApiResponse( 'Role berhasil dibuat!', $role, 201);
+            }
 
         } catch (ValidationException $e) {
             // Jika ada error validasi
@@ -97,6 +103,7 @@ class RoleController extends Controller
         if(!$role) {
             return $this->sendApiError('Hapus role gagal!', $id, 403);
         }        
+        Cache::forget('role_key');
         return $this->sendApiResponse('Hapus role berhasil!', $id, 201);
     }
 }

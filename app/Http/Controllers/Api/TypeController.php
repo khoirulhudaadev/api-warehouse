@@ -55,6 +55,7 @@ class TypeController extends Controller
         // $type = Type::create($validator->validate());
         $type = $this->typeRepository->create($validator->validate());
         if($type) {
+            Cache::forget('type_key');
             return $this->sendApiResponse( 'Jenis berhasil dibuat!', $type, 201);
         }
         return $this->sendApiError( 'Jenis gagal dibuat!', $type, 403);

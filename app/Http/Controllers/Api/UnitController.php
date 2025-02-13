@@ -57,6 +57,7 @@ class UnitController extends Controller
         $unit = $this->unitRepository->create($validator->validate());
 
         if($unit) {
+            Cache::forget('use_key');
             return $this->sendApiResponse( 'Satuan berhasil dibuat!', $unit, 201);
         }
         return $this->sendApiError( 'Satuan gagal dibuat!', $unit, 403);

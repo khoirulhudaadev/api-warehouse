@@ -3,12 +3,15 @@
 namespace App\Repositories;
 
 use App\Models\Api\Role;
+use Illuminate\Support\Facades\Cache;
 
 class RoleRepository implements RoleRepositoryInterface 
 {
     public function getAll() 
     {
-        return Role::all();
+        return Cache::remember('role_key', 60, function () {
+            return Role::all();
+        });
     }
 
     public function getById($id)

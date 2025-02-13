@@ -163,11 +163,12 @@ class ItemController extends Controller
             }
 
             $item = $this->itemRepository->update($id, $validatedData);
-            if(!$item) {
-                return $this->sendApiError('Gagal perbarui data barang!', $id, 400);
+            if($item) {
+                Cache::forget('item_key');
+                return $this->sendApiResponse('Berhasil perbarui data barang!', $item, 201);
             }
-
-            return $this->sendApiResponse('Berhasil perbarui data barang!', $item, 201);
+            
+            return $this->sendApiError('Gagal perbarui data barang!', $id, 400);
         } catch (ValidationException $e) {
             // Jika ada error validasi
             return $this->sendApiError('Validation error', $e->errors(), 422);
