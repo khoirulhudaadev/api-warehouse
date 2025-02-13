@@ -14,6 +14,7 @@ class Item extends Model
     protected $primaryKey = 'item_id';
 
     protected $fillable = [
+        'management_name',
         'item_id',
         'item_name',
         'type_id',
@@ -31,5 +32,10 @@ class Item extends Model
     public function units(): BelongsTo 
     {
         return $this->belongsTo(Unit::class, 'unit_id')->select('unit_id', 'unit_name');
+    }
+
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('username', 'email');
     }
 }

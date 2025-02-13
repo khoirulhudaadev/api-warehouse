@@ -5,6 +5,7 @@ namespace App\Models\Api;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject; 
@@ -50,6 +51,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function role(): BelongsTo {
         return $this->belongsTo(Role::class, 'role_id'); // Relasi ke Role
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class, 'user_id');
     }
  
     /**
