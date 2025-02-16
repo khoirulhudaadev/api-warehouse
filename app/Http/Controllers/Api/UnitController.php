@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Api\Unit;
 use App\Repositories\UnitRepository;
 use App\Traits\ApiResponseTraitError;
 use App\Traits\ApiResponseTraitSuccess;
@@ -82,7 +83,24 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
+        $checkUnit = $this->unitRepository->getById($id);
+        if(!$checkUnit) {
+            return $this->sendApiError('Satuan tidak ada!', $id, 422);
+        }
+        
+        $validator = Validator::make($request->all(), [
+            'unit_name' => 'required|min:2|string|unique:units',
+        ]);
+        
+        if($validator->fails()) {
+            return $this->sendApiError($validator->errors(), $request->all(), 422);
+        }
+        
+        $update = $this->unitRepository->update($id, $validator->validate());
+        if(!$update) {
+            return $this->sendApiError('Satuan gagal diperbarui!', $id, 403);
+        }
+        return $this->sendApiResponse('Satuan berhasil diperbarui!', $id, 201);
     }
 
     /**

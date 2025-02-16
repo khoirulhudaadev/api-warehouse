@@ -14,17 +14,22 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
  
+    protected $primaryKey = 'user_id';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'username',
         'role_id',
         'email',
         'password',
     ];
+
+    protected $guarded = ['user_id'];
  
     /**
      * The attributes that should be hidden for serialization.
@@ -51,7 +56,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function role(): BelongsTo {
         return $this->belongsTo(Role::class, 'role_id'); // Relasi ke Role
-    }
+    }   
 
     public function items(): HasMany
     {
@@ -65,7 +70,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTIdentifier()
     {
-        return $this->getKey();
+        return $this->user_id;
     }
  
     /**

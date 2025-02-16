@@ -18,6 +18,8 @@ class Role extends Model
         'role_name'
     ];
 
+    protected $guarded = ['role_id']; 
+
     // Relasi dengan model Item (misalnya setiap type bisa memiliki banyak item)
     public function users(): HasMany 
     {

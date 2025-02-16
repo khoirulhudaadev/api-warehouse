@@ -80,7 +80,25 @@ class TypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
+        $checkType = $this->typeRepository->getById($id);
+        
+        if(!$checkType) {
+            return $this->sendApiError('Satuan tidak ada!', $id, 422);
+        }
+        
+        $validator = Validator::make($request->all(), [
+            'type_name' => 'required|min:2|string|unique:types',
+        ]);
+        
+        if($validator->fails()) {
+            return $this->sendApiError($validator->errors(), $request->all(), 422);
+        }
+        
+        $update = $this->typeRepository->update($id, $validator->validate());
+        if(!$update) {
+            return $this->sendApiError('Jenis gagal diperbarui!', $id, 403);
+        }
+        return $this->sendApiResponse('Jenis berhasil diperbarui!', $id, 201);
     }
 
     /**

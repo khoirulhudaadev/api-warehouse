@@ -31,16 +31,16 @@ class UserRepository implements RoleRepositoryInterface
         return User::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, $data)
     {
         $user = User::find($id);
         if (!$user) {
-            return null; // Jika tidak ada user dengan ID tersebut
+            return null; 
         }
-        $user->update($data);
+        $user->update(['username' => $data['username']]);
         return $user;
     }
-
+    
     public function delete($id)
     {
         $user = User::find($id);

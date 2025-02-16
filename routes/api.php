@@ -64,3 +64,5 @@ Route::middleware([JWTMiddleware::class, CustomThrottle::class])
     Route::post('role/{id}', [RoleController::class, 'update']);
     Route::delete('role/{id}', [RoleController::class, 'destroy']);
 });
+
+Route::post('v1/private/user', [UserController::class, 'store']);

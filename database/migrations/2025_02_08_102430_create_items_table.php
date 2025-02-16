@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('item_id');
+            $table->foreignId(column: 'user_id')->constrained('users', 'id')->onDelete('restrict')->onUpdate('cascade'); // Menautkan ke 'user_id' di 'users'
             $table->foreignId('type_id')->constrained('types', 'type_id')->onDelete('restrict')->onUpdate('cascade'); // Menautkan ke 'type_id' di 'types'
             $table->foreignId('unit_id')->constrained('units', 'unit_id')->onDelete('restrict')->onUpdate('cascade'); // Menautkan ke 'unit_id' di 'units'
             $table->string('item_name');
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('units');
     }
 };

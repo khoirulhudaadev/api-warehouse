@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->string('user_id', 50)->after('item_id');
+            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('restrict')->onUpdate('cascade'); // Menautkan ke 'type_id' di 'types'
         });
     }
 
@@ -22,6 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('items', function (Blueprint $table) {
+            // Menghapus foreign key dan kolom user_id
+            $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
         });
     }

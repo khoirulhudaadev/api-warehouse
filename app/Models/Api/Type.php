@@ -16,6 +16,7 @@ class Type extends Model
         'type_id',
         'type_name'
     ];
+    protected $guarded = ['type_id']; 
 
     // Relasi dengan model Item (misalnya setiap type bisa memiliki banyak item)
     public function items(): HasMany 

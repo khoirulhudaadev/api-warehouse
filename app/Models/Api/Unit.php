@@ -17,6 +17,8 @@ class Unit extends Model
         'unit_name'
     ];
 
+    protected $guarded = ['unit_id']; 
+
     // Relasi dengan model Item (misalnya setiap type bisa memiliki banyak item)
     public function items(): HasMany 
     {

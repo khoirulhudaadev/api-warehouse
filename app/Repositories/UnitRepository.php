@@ -26,11 +26,11 @@ class UnitRepository implements UnitRepositoryInterface
         return Unit::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, $data)
     {
         $unit = Unit::find($id);
         if (!$unit) {
-            return null; // Jika tidak ada user dengan ID tersebut
+            return null; 
         }
         $unit->update($data);
         return $unit;

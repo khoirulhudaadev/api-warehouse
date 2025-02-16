@@ -25,9 +25,12 @@ class TypeRepository implements TypeRepositoryInterface
         return Type::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, $data)
     {
         $type = Type::find($id);
+        if (!$type) {
+            return null; 
+        }
         $type->update($data);
         return $type;
     }

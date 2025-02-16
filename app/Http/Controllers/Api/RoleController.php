@@ -91,7 +91,25 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
+        $checkRole = $this->roleRepository->getById($id);
+        
+        if(!$checkRole) {
+            return $this->sendApiError('Satuan tidak ada!', $id, 422);
+        }
+        
+        $validator = Validator::make($request->all(), [
+            'Role_name' => 'required|min:5|string|unique:roles',
+        ]);
+        
+        if($validator->fails()) {
+            return $this->sendApiError($validator->errors(), $request->all(), 422);
+        }
+        
+        $update = $this->roleRepository->update($id, $validator->validate());
+        if(!$update) {
+            return $this->sendApiError('Jabatan gagal diperbarui!', $id, 403);
+        }
+        return $this->sendApiResponse('Jabatan berhasil diperbarui!', $id, 201);
     }
 
     /**

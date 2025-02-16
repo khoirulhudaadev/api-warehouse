@@ -10,7 +10,7 @@ class ItemRepository implements ItemRepositoryInterface
     public function getAll() 
     {
         return Cache::remember('item_key', 60, function () {
-            return Item::with(['units', 'types'])
+            return Item::with(['units:unit_id,unit_name', 'types:type_id,type_name', 'users:user_id,username,email'])
             ->select(array_diff(\Schema::getColumnListing('items'), ['image_public_id'])) // Ambil semua kecuali 'te'
             ->get();
         });

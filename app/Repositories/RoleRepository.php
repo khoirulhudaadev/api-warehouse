@@ -24,10 +24,12 @@ class RoleRepository implements RoleRepositoryInterface
         return Role::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, $data)
     {
         $role = Role::find($id);
-
+        if (!$role) {
+            return null;
+        }
         $role->update($data);
         return $role;
     }

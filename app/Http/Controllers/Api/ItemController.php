@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-// Mengambil hanya kolom 'type_name' dari database
-// $typeNames = Type::pluck('type_name');
+// Mengambil hanya kolom 'item_name' dari database
+// $itemNames = item::pluck('item_name');
 
-// $types = $result->map(function ($type) {
+// $items = $result->map(function ($item) {
 //     return [
-//         'id' => $type->type_id,
-//         'name' => $type->type_name,
-//         'description' => 'Description for ' . $type->type_name
+//         'id' => $item->item_id,
+//         'name' => $item->item_name,
+//         'description' => 'Description for ' . $item->item_name
 //     ];
 // });
 
@@ -70,7 +70,8 @@ class ItemController extends Controller
             $validator = Validator::make($request->all(), [
                 'item_name' => 'required|max:20|string',
                 'unit_id' => 'required|integer',
-                'type_id' => 'required|integer',
+                'item_id' => 'required|integer',
+                'user_id' => 'required|integer',
                 'amount' => 'required|integer',
                 'image' => 'required|mimes:jpg,jpeg,png|file|max:50000',
             ]);
@@ -92,9 +93,9 @@ class ItemController extends Controller
             $validatedData['image'] = $securePath;
             $validatedData['image_public_id'] = $publicId;
 
-            // $type = Type::create($validator->validate());
-            $type = $this->itemRepository->create($validatedData);
-            return $this->sendApiResponse('Barang berhasil ditambahkan!', $type, 201);
+            // $item = item::create($validator->validate());
+            $item = $this->itemRepository->create($validatedData);
+            return $this->sendApiResponse('Barang berhasil ditambahkan!', $item, 201);
 
         } catch (ValidationException $e) {
             // Jika ada error validasi
@@ -111,11 +112,11 @@ class ItemController extends Controller
     public function show(string $id)
     {
         //
-        $type = $this->itemRepository->getById($id);
-        if(!$type) {
+        $item = $this->itemRepository->getById($id);
+        if(!$item) {
             return $this->sendApiError('Barang tidak ada!', $id, 422);
         }
-        return $this->sendApiResponse('Barang ditemukan!', $type,200);
+        return $this->sendApiResponse('Barang ditemukan!', $item,200);
     }
 
     /**
@@ -127,7 +128,8 @@ class ItemController extends Controller
             $validator = Validator::make($request->all(), [
                 'item_name' => 'required|max:20|string',
                 'unit_id' => 'required|integer',
-                'type_id' => 'required|integer',
+                'item_id' => 'required|integer',
+                'user_id' => 'required|integer|in:1,2,3',
                 'amount' => 'required|integer',
                 'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|file|max:50000'
             ]);
@@ -183,9 +185,9 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        $type = $this->itemRepository->delete($id);
-        if(!$type) {
-            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $type, 422);
+        $item = $this->itemRepository->delete($id);
+        if(!$item) {
+            return $this->sendApiError('Data dengan id ' .$id. ' tidak ditemukan!', $item, 422);
         }       
         Cache::forget('item_key'); 
         return $this->sendApiResponse('Hapus data berhasil!', $id, 201);

@@ -59,7 +59,7 @@ class AuthWarehouseController extends Controller
   
         return $this->sendApiResponse('Berhasil masuk!', $data);
     }
-  
+
     /**
      * Send email message
      *

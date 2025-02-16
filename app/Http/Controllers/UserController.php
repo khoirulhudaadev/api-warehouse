@@ -81,7 +81,11 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = $this->userRepository->getById($id);
+        if(!$user) {
+            return $this->sendApiError('Pengguna tidak ada!', $id, 422);
+        }
+        return $this->sendApiResponse('Pengguna ditemukan!', $user,200);
     }
 
     /**
@@ -89,7 +93,17 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $checkAccount = $this->userRepository->getById($id);
+        if(!$checkAccount) {
+            return $this->sendApiError('Data pengguna tidak ditemukan!', $id, 422);
+        }
+
+        $update = $this->userRepository->update($id, $request);
+        if(!$update) {
+            return $this->sendApiError('Terjadi kesalahan saat perbarui data!', $request, 422);
+        }
+        Cache::forget('user_key');
+        return $this->sendApiError('Berhasil perbarui data!', $request->all(), 201);
     }
 
     /**
