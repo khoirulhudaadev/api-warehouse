@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TypeController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\AuthWarehouseController;
+use App\Http\Controllers\Api\DeliveryController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CustomThrottle;
 use App\Http\Middleware\JWTMiddleware;
@@ -34,7 +35,14 @@ Route::middleware([JWTMiddleware::class, CustomThrottle::class])
     Route::post('item', [ItemController::class, 'store']);
     Route::get('item/{id}', [ItemController::class, 'show']);
     Route::post('item/{id}', [ItemController::class, 'update']);
+    Route::post('item/out/{id}', [ItemController::class, 'updateOut']);
     Route::delete('item/{id}', [ItemController::class, 'destroy']);
+  
+    // Deliveries
+    Route::get('delivery', [DeliveryController::class, 'index']);
+    Route::post('delivery/restore/{id}', [DeliveryController::class, 'restore']);
+    Route::get('delivery/{id}', [DeliveryController::class, 'show']);
+    Route::delete('delivery/{id}', action: [DeliveryController::class, 'destroy']);
     
     // Units
     Route::get('unit', [UnitController::class, 'index']);

@@ -36,7 +36,7 @@ class RoleController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Role berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Role tidak ditemukan!', $result, 422);    
+        return $this->sendApiError( 'Role tidak ditemukan!', $result, 200);    
     }
         
 
@@ -109,6 +109,7 @@ class RoleController extends Controller
         if(!$update) {
             return $this->sendApiError('Jabatan gagal diperbarui!', $id, 403);
         }
+        Cache::forget('role_key');
         return $this->sendApiResponse('Jabatan berhasil diperbarui!', $id, 201);
     }
 

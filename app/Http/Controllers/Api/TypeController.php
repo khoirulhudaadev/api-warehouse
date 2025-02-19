@@ -33,7 +33,7 @@ class TypeController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse('semua jenis berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError('Jenis tidak ditemukan!', $result, 422);    
+        return $this->sendApiError('Jenis tidak ditemukan!', $result, 200);    
     }
         
 
@@ -98,6 +98,7 @@ class TypeController extends Controller
         if(!$update) {
             return $this->sendApiError('Jenis gagal diperbarui!', $id, 403);
         }
+        Cache::forget('type_key');
         return $this->sendApiResponse('Jenis berhasil diperbarui!', $id, 201);
     }
 

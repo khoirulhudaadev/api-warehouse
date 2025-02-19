@@ -35,7 +35,7 @@ class UnitController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Data berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Data tidak ditemukan!', $result, 422);    
+        return $this->sendApiError( 'Data tidak ditemukan!', $result, 200);    
     }
         
 
@@ -58,7 +58,7 @@ class UnitController extends Controller
         $unit = $this->unitRepository->create($validator->validate());
 
         if($unit) {
-            Cache::forget('use_key');
+            Cache::forget('unit_key');
             return $this->sendApiResponse( 'Satuan berhasil dibuat!', $unit, 201);
         }
         return $this->sendApiError( 'Satuan gagal dibuat!', $unit, 403);
@@ -100,6 +100,7 @@ class UnitController extends Controller
         if(!$update) {
             return $this->sendApiError('Satuan gagal diperbarui!', $id, 403);
         }
+        Cache::forget('unit_key');
         return $this->sendApiResponse('Satuan berhasil diperbarui!', $id, 201);
     }
 

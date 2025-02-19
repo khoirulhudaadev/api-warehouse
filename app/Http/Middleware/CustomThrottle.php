@@ -12,7 +12,7 @@ class CustomThrottle
     public function handle(Request $request, Closure $next)
     {
         // Daftar cache yang akan diperiksa
-        $cacheKeys = ['item_key', 'unit_key', 'type_key', 'user_key', 'role_key'];
+        $cacheKeys = ['item_key', 'unit_key', 'type_key', 'user_key', 'role_key', 'delivery_key'];
 
         // Cek apakah salah satu cache tersedia
         foreach ($cacheKeys as $cacheKey) {

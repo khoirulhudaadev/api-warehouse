@@ -49,7 +49,7 @@ class ItemController extends Controller
                 return $this->sendApiResponse('Barang berhasil didapatkan!', $result);    
             }
             
-            return $this->sendApiError('Barang tidak ditemukan!', $result, 422);  
+            return $this->sendApiError('Barang tidak ditemukan!', $result, 200);  
             
         } catch (ValidationException $e) {
             // Jika ada error validasi
@@ -70,7 +70,7 @@ class ItemController extends Controller
             $validator = Validator::make($request->all(), [
                 'item_name' => 'required|max:20|string',
                 'unit_id' => 'required|integer',
-                'item_id' => 'required|integer',
+                'type_id' => 'required|integer',
                 'user_id' => 'required|integer',
                 'amount' => 'required|integer',
                 'image' => 'required|mimes:jpg,jpeg,png|file|max:50000',
@@ -78,7 +78,7 @@ class ItemController extends Controller
 
             if($validator->fails()) 
             {
-                return $this->sendApiError($validator->errors(), $request, 422);
+                return $this->sendApiError($validator->errors(), $request->all(), 422);
             }
 
             $image = $request->file('image');
@@ -122,7 +122,7 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, String $id)    
+    public function update(Request $request, string $id)    
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -135,7 +135,7 @@ class ItemController extends Controller
             ]);
             
             if ($validator->fails()) {
-                return $this->sendApiError($validator->errors(), $request, 422);
+                return $this->sendApiError($validator->errors(), $request->all(), 422);
             }
 
             $itemFind = $this->itemRepository->getById($id);
@@ -171,6 +171,51 @@ class ItemController extends Controller
             }
             
             return $this->sendApiError('Gagal perbarui data barang!', $id, 400);
+        } catch (ValidationException $e) {
+            // Jika ada error validasi
+            return $this->sendApiError('Validation error', $e->errors(), 422);
+        } catch (Exception $e) {
+            // Jika ada error lainnya (misalnya database atau lainnya)
+            return $this->sendApiError('Terjadi kesalahan internal', $e->getMessage(), 500);
+        }
+    }
+    
+    public function updateOut(Request $request, string $id) 
+    {
+        try  {
+            $checkItem = $this->itemRepository->getById($id);
+            if(!$checkItem) {
+                return $this->sendApiError('Barang tidak ditemukan', $request->all(), 422);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'item_name' => 'required|string',
+                'type_id' => 'required',
+                'type_name' => 'required|string|max:40',
+                'unit_id' => 'required',
+                'unit_name' => 'required|string|max:40',
+                'item_id' => 'required',
+                'image' => 'required|string',
+                'amount' => 'required',
+                'image_public_id' => 'required|string',
+                'management_in' => 'required|string|max:60',
+                'management_out' => 'required|string|max:60',
+            ]);
+
+            if($validator->fails()) 
+            {   
+                return $this->sendApiError($validator->errors(), $request->all(), 422);
+            }
+
+            // dd($request->all());
+
+            $updateAmount = $this->itemRepository->updateAmount($id, $validator->validated());
+            if(!$updateAmount) {
+                return $this->sendApiError('Gagal untuk keluarin barang', $updateAmount, 403);
+            }
+            
+            Cache::forget('item_key');
+            return $this->sendApiResponse('Berhasil untuk keluarin barang', $updateAmount, 201);
         } catch (ValidationException $e) {
             // Jika ada error validasi
             return $this->sendApiError('Validation error', $e->errors(), 422);

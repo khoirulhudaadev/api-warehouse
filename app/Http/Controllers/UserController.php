@@ -34,7 +34,7 @@ class UserController extends Controller
         if($result->count() > 0) {
             return $this->sendApiResponse( 'Akun berhasil didapatkan!', $result);    
         }
-        return $this->sendApiError( 'Akun tidak ditemukan!', $result);  
+        return $this->sendApiError( 'Akun tidak ditemukan!', $result, 200);  
     }
 
     /**
@@ -64,7 +64,7 @@ class UserController extends Controller
     
             if($user) {
                 Cache::forget('use_key');
-                return $this->sendApiResponse('Akun berhasil dibuat!', $user);
+                return $this->sendApiResponse('Akun berhasil dibuat!', $user, 201);
             }
     
         } catch (ValidationException $e) {
