@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
   
 use App\Http\Controllers\Controller;
-use App\Mail\PasswordResetMail;
+use App\Jobs\sendEmailJob;
 use App\Models\Api\User;
 use App\Repositories\UserRepository;
 use App\Traits\ApiResponseTraitError;
@@ -11,7 +11,6 @@ use App\Traits\ApiResponseTraitSuccess;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;  
@@ -97,7 +96,8 @@ class AuthWarehouseController extends Controller
         }
     
         try {
-            Mail::to($request->email)->send(new PasswordResetMail($request->email, $token));
+            sendEmailJob::dispatch($request->email, $token);
+            // Mail::to($request->email)->send(new PasswordResetMail($request->email, $token));
         } catch (\Exception $e) {
             return $this->sendApiError('Terjadi kesalahan saat mengirim email. Coba lagi nanti.', null, 500);
         }
