@@ -23,7 +23,7 @@
         "APP_ENV": "production",
         "APP_TIMEZONE": "Asia/Jakarta",
         "APP_DEBUG": "false",
-        "APP_URL": "",
+        "APP_URL": "https://api-warehouse.vercel.app",
         "APP_KEY": "base64:rzrNftHtn2J941AVut7sGLSo7Fc1xpGhVB1K8X5blWE=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
