@@ -1,28 +1,26 @@
-    <?php
+<?php
 
-    use App\Http\Controllers\Api\ItemController;
-    use App\Http\Controllers\Api\RoleController;
-    use App\Http\Controllers\Api\TypeController;
-    use App\Http\Controllers\Api\UnitController;
-    use App\Http\Controllers\Api\AuthWarehouseController;
-    use App\Http\Controllers\Api\DeliveryController;
-    use App\Http\Controllers\UserController;
-    use App\Http\Middleware\CustomThrottle;
-    use App\Http\Middleware\JWTMiddleware;
-    use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\TypeController;
+use App\Http\Controllers\Api\UnitController;
+use App\Http\Controllers\Api\AuthWarehouseController;
+use App\Http\Controllers\Api\DeliveryController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\CustomThrottle;
+use App\Http\Middleware\JWTMiddleware;
+use Illuminate\Support\Facades\Route;
 
-    /**
-     * Maximum 3 API hits within 1 minute.
-     * Rate-limiting is used to prevent server overload and mitigate DDoS attacks.
-     *
-    */
+/**
+ * Maximum 3 API hits within 1 minute.
+ * Rate-limiting is used to prevent server overload and mitigate DDoS attacks.
+ *
+*/
 
-    // Route::middleware([JWTMiddleware::class, CustomThrottle::class])
-    // ->prefix('v1')
-    // ->group(function() 
-    // {
-        
-    // });
+Route::middleware([JWTMiddleware::class, CustomThrottle::class])
+->prefix('v1')
+->group(function() 
+{
     // Authentications
     Route::post('/login', [AuthWarehouseController::class, 'login'])
     ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
@@ -38,7 +36,7 @@
     Route::post('item/{id}', [ItemController::class, 'update']);
     Route::post('item/out/{id}', [ItemController::class, 'updateOut']);
     Route::delete('item/{id}', [ItemController::class, 'destroy']);
-
+  
     // Deliveries
     Route::get('delivery', [DeliveryController::class, 'index']);
     Route::post('delivery/restore/{id}', [DeliveryController::class, 'restore']);
@@ -72,8 +70,9 @@
     Route::get('role/{id}', [RoleController::class, 'show']);
     Route::post('role/{id}', [RoleController::class, 'update']);
     Route::delete('role/{id}', [RoleController::class, 'destroy']);
+});
 
-    Route::post('v1/private/user', [UserController::class, 'store']);
-    Route::get('v1/private/testing-api', fn() => response()->json([
-        'message' => 'Successfully test!'
-    ]));
+Route::post('v1/private/user', [UserController::class, 'store']);
+Route::get('v1/private/testing-api', fn() => response()->json([
+    'message' => 'Successfully test!'
+]));
