@@ -1,8 +1,6 @@
 {
     "version": 2,
-    "regions": [
-        "fra1"
-    ],
+    "framework": null,
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.1"
@@ -50,7 +48,7 @@
         "WT_SECRET": "zIvMor3uqgBV48RNZxHOILnHyuCqDeII1gazWbKYIhn70vHy0blFYcyEeCYUrExH",
         "WT_ALGO": "HS256",
         "MAIL_MAILER":"smtp",
-        "MAIL_SCHEME": null,
+        "MAIL_SCHEME": "null",
         "MAIL_HOST":"smtp.gmail.com",
         "MAIL_PORT":"587",
         "MAIL_USERNAME":"developervalclass@gmail.com",
