@@ -46,7 +46,7 @@
         "CLOUDINARY_CLOUD_NAME": "dgpycdmxj",
         "CLOUDINARY_API_KEY": "649329568576396",
         "CLOUDINARY_API_SECRET": "H20DE0apSwO2h7TFjIKkN2llBM0",
-        "CLOUDINARY_SECURE_URL": true,
+        "CLOUDINARY_SECURE_URL": "true",
         "WT_SECRET": "zIvMor3uqgBV48RNZxHOILnHyuCqDeII1gazWbKYIhn70vHy0blFYcyEeCYUrExH",
         "WT_ALGO": "HS256",
         "MAIL_MAILER":"smtp",
