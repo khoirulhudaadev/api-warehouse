@@ -74,3 +74,6 @@ Route::middleware([JWTMiddleware::class, CustomThrottle::class])
 });
 
 Route::post('v1/private/user', [UserController::class, 'store']);
+Route::get('v1/private/testing-api', fn() => response()->json([
+    'message' => 'Successfully test!'
+]));
