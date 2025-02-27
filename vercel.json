@@ -1,12 +1,61 @@
 {
     "version": 2,
-    "builds": [
+    "regions": [
+        "fra1"
+    ],
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.1"
+        }
+    },
+    "routes": [
         {
-            "src": "api/index.php",
-            "use": "@vercel/php",
-            "config": { "runtime": "php-8.0" }
+            "src": "/build/(.*)",
+            "dest": "/build/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
         }
     ],
-    "buildCommand": "apt-get update && apt-get install -y libssl-dev && vite build",
-    "outputDirectory": "public"
+    "public": true,
+    "buildCommand": "vite build",
+    "outputDirectory": "public",
+    "env": {
+        "APP_ENV": "production",
+        "APP_TIMEZONE": "Asia/Jakarta",
+        "APP_DEBUG": "false",
+        "APP_URL": "",
+        "APP_KEY": "base64:rzrNftHtn2J941AVut7sGLSo7Fc1xpGhVB1K8X5blWE=",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_DRIVER": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "f6rwt.h.filess.io",
+        "DB_PORT": "3307",
+        "DB_DATABASE": "warehouse_chainusbet",
+        "DB_USERNAME": "warehouse_chainusbet",
+        "DB_PASSWORD": "a31729f26275e66d2f0d2d79fd03100398212266",
+        "CLOUDINARY_URL": "cloudinary://649329568576396:H20DE0apSwO2h7TFjIKkN2llBM0@dgpycdmxj",
+        "CLOUDINARY_CLOUD_NAME": "dgpycdmxj",
+        "CLOUDINARY_API_KEY": "649329568576396",
+        "CLOUDINARY_API_SECRET": "H20DE0apSwO2h7TFjIKkN2llBM0",
+        "CLOUDINARY_SECURE_URL": true,
+        "WT_SECRET": "zIvMor3uqgBV48RNZxHOILnHyuCqDeII1gazWbKYIhn70vHy0blFYcyEeCYUrExH",
+        "WT_ALGO": "HS256",
+        "MAIL_MAILER":"smtp",
+        "MAIL_SCHEME": null,
+        "MAIL_HOST":"smtp.gmail.com",
+        "MAIL_PORT":"587",
+        "MAIL_USERNAME":"developervalclass@gmail.com",
+        "MAIL_PASSWORD":"vprhmxtbmkcfvyui",
+        "MAIL_FROM_ADDRESS":"developervalclass@gmail.com",
+        "MAIL_FROM_NAME":"Warehouse-Management"
+    }
 }
