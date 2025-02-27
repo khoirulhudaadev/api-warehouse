@@ -21,6 +21,8 @@ Route::middleware([JWTMiddleware::class, CustomThrottle::class])
 ->prefix('v1')
 ->group(function() 
 {
+
+    
     // Authentications
     Route::post('/login', [AuthWarehouseController::class, 'login'])
     ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
@@ -28,6 +30,10 @@ Route::middleware([JWTMiddleware::class, CustomThrottle::class])
     ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
     Route::post('/reset-password', [AuthWarehouseController::class, 'resetPassword'])
     ->withoutMiddleware([JWTMiddleware::class, 'throttle']);
+   
+    Route::get('v1/private/testing-api2', fn() => response()->json([
+        'message' => 'Successfully test2222!'
+    ]));
     
     // Items
     Route::get('item', [ItemController::class, 'index']);
