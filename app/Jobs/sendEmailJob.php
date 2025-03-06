@@ -30,5 +30,9 @@ class sendEmailJob implements ShouldQueue
     public function handle(): void
     {
         Mail::to($this->email)->send(new PasswordResetMail($this->email, $this->token));
+        \DB::table('job_history')->insert([
+            'message' => $this->email,
+            'processed_at' => now(),
+        ]);
     }
 }
